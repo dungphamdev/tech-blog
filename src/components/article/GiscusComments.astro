@@ -1,0 +1,112 @@
+---
+import { SITE } from '../../site.config';
+import { hasCompleteGiscusConfig } from '../../utils/comments';
+import type { Language } from '../../utils/i18n';
+
+interface Props {
+  term: string;
+  lang: Language;
+}
+
+const { term, lang } = Astro.props;
+const comments = SITE.comments;
+const shouldRender = hasCompleteGiscusConfig(comments) && term;
+---
+
+{
+  shouldRender && (
+    <section class="mt-10 border-t pt-8" style="border-color: var(--line)" aria-label="Comments">
+      <div class="giscus" />
+    </section>
+  )
+}
+
+{
+  shouldRender && (
+    <script
+      is:inline
+      define:vars={{
+        repo: comments.repo,
+        repoId: comments.repoId,
+        category: comments.category,
+        categoryId: comments.categoryId,
+        mapping: comments.mapping,
+        term,
+        strict: comments.strict,
+        reactionsEnabled: comments.reactionsEnabled,
+        emitMetadata: comments.emitMetadata,
+        inputPosition: comments.inputPosition,
+        loading: comments.loading,
+        lang,
+        lightTheme: comments.lightTheme,
+        darkTheme: comments.darkTheme,
+      }}
+    >
+      const currentGiscusTheme = () => (document.documentElement.classList.contains('dark') ? darkTheme : lightTheme);
+
+      const mountGiscus = () => {
+        if (document.querySelector('script[src="https://giscus.app/client.js"]')) {
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', repo);
+        script.setAttribute('data-repo-id', repoId);
+        script.setAttribute('data-category', category);
+        script.setAttribute('data-category-id', categoryId);
+        script.setAttribute('data-mapping', mapping);
+        script.setAttribute('data-term', term);
+        script.setAttribute('data-strict', strict);
+        script.setAttribute('data-reactions-enabled', reactionsEnabled);
+        script.setAttribute('data-emit-metadata', emitMetadata);
+        script.setAttribute('data-input-position', inputPosition);
+        script.setAttribute('data-theme', currentGiscusTheme());
+        script.setAttribute('data-lang', lang);
+        script.setAttribute('data-loading', loading);
+        script.crossOrigin = 'anonymous';
+        script.async = true;
+
+        document.querySelector('.giscus')?.append(script);
+      };
+
+      const setGiscusTheme = () => {
+        const frame = document.querySelector('iframe.giscus-frame');
+        if (!frame?.contentWindow) {
+          return;
+        }
+
+        frame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: currentGiscusTheme(),
+              },
+            },
+          },
+          'https://giscus.app',
+        );
+      };
+
+      const applyInitialGiscusTheme = (attempt = 0) => {
+        const frame = document.querySelector('iframe.giscus-frame');
+        if (frame) {
+          setGiscusTheme();
+          return;
+        }
+
+        if (attempt < 20) {
+          window.setTimeout(() => applyInitialGiscusTheme(attempt + 1), 250);
+        }
+      };
+
+      mountGiscus();
+      applyInitialGiscusTheme();
+
+      new MutationObserver(setGiscusTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+    </script>
+  )
+}

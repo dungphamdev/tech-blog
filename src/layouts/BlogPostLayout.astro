@@ -3,6 +3,7 @@ import type { BlogPost } from '../utils/posts';
 import BaseLayout from './BaseLayout.astro';
 import ArticleHeader from '../components/article/ArticleHeader.astro';
 import ArticleTOC from '../components/article/ArticleTOC.astro';
+import GiscusComments from '../components/article/GiscusComments.astro';
 import type { Language } from '../utils/i18n';
 
 interface Props {
@@ -31,6 +32,7 @@ const { post, headings, readingTime, canonical, alternateUrls, languageSwitchUrl
     <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
       <div class="prose max-w-[780px]">
         <slot />
+        {!post.data.draft && <GiscusComments term={post.data.translationKey} lang={post.data.lang} />}
       </div>
       <ArticleTOC headings={headings} />
     </div>

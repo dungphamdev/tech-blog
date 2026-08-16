@@ -6,6 +6,22 @@ export const SITE = {
   url: 'https://dungpt.github.io/tech-blog/',
   github: 'https://github.com/dungphamdev',
   linkedin: 'https://www.linkedin.com/in/dungphamdev/',
+  comments: {
+    enabled: true,
+    provider: 'giscus',
+    repo: 'dungphamdev/tech-blog',
+    repoId: 'R_kgDOT5zFzA',
+    category: 'General',
+    categoryId: 'DIC_kwDOT5zFzM4DDghx',
+    mapping: 'specific',
+    strict: '0',
+    reactionsEnabled: '1',
+    emitMetadata: '0',
+    inputPosition: 'bottom',
+    loading: 'lazy',
+    lightTheme: 'light',
+    darkTheme: 'dark',
+  },
 };
 
 export const CATEGORIES = [
