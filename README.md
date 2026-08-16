@@ -40,12 +40,17 @@ This project deploys to GitHub Pages from the `master` branch using GitHub Actio
 3. Set the build source to `GitHub Actions`.
 4. Use `master` as the protected release branch for public deployments.
 
+The first deployment workflow will fail with `Get Pages site failed` until Pages is enabled in
+repository settings. This is expected if `Settings > Pages` has not been configured yet.
+
 ### Validation and Release Flow
 
 - Pull requests targeting `master` run `npm run check` and `npm run build`.
 - Pushes to `master` run the same validation and then publish the generated `dist/` artifact.
 - Failed validation blocks a change from being treated as release-ready.
 - Failed deployment attempts leave the last successful GitHub Pages site available.
+- GitHub-hosted runners now default JavaScript actions to Node 24. The actions used in this
+  workflow are current and compatible with that runner change.
 
 ### Production URL
 

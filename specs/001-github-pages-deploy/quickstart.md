@@ -11,6 +11,9 @@ Validate the deployment pipeline end to end for pull request checks and producti
 - Maintainer access to review workflow runs and repository Pages settings
 - Placeholder site metadata replaced in project configuration before production release
 
+If `Settings > Pages` has not been configured to use `GitHub Actions`, the `actions/configure-pages`
+step will fail with `Get Pages site failed` before any deployment can succeed.
+
 ## Local Validation
 
 1. Run `npm run check`
@@ -43,6 +46,7 @@ Expected outcome:
 - The workflow validates and publishes automatically
 - The public site reflects the merged repository state
 - The published site resolves correctly under `/tech-blog/`
+- The run succeeds only after GitHub Pages has been enabled in repository settings
 
 ## URL Stability Check
 

@@ -27,6 +27,8 @@ GitHub Pages deployment feature.
 
 - Only approved changes merged to `master` may trigger public publication through the normal
   repository workflow.
+- Repository Pages settings must be enabled and configured for `GitHub Actions` before the
+  publication workflow can succeed.
 - Publication must use repository-generated site output and must not require manual artifact
   upload.
 - If publication fails, the previously successful public site must remain available.
