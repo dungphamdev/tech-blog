@@ -31,46 +31,56 @@ Draft posts are visible in development and excluded from production builds.
 
 ## Deployment
 
-The GitHub Actions workflow in `.github/workflows/deploy.yml` builds pull requests and deploys pushes to `main` through GitHub Pages. Replace placeholder values in `src/site.config.ts`, `astro.config.mjs`, and `public/robots.txt` before publishing.
+This project deploys to GitHub Pages from the `master` branch using GitHub Actions.
 
-```sh
-npm create astro@latest -- --template minimal
-```
+### Repository Setup
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1. Open the repository in GitHub.
+2. Go to `Settings > Pages`.
+3. Set the build source to `GitHub Actions`.
+4. Use `master` as the protected release branch for public deployments.
 
-## 🚀 Project Structure
+### Validation and Release Flow
 
-Inside of your Astro project, you'll see the following folders and files:
+- Pull requests targeting `master` run `npm run check` and `npm run build`.
+- Pushes to `master` run the same validation and then publish the generated `dist/` artifact.
+- Failed validation blocks a change from being treated as release-ready.
+- Failed deployment attempts leave the last successful GitHub Pages site available.
+
+### Production URL
+
+The site is configured as a GitHub Pages project site:
+
+`https://dungpt.github.io/tech-blog/`
+
+If the repository owner or repository name changes, update:
+
+- `astro.config.mjs`
+- `src/site.config.ts`
+- `public/robots.txt`
+
+## Project Structure
 
 ```text
 /
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+|-- .github/
+|   `-- workflows/
+|       `-- deploy.yml
+|-- public/
+|-- src/
+|   |-- components/
+|   |-- content/
+|   |-- layouts/
+|   |-- pages/
+|   |-- styles/
+|   |-- utils/
+|   `-- site.config.ts
+|-- astro.config.mjs
+`-- package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Notes
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- The site is configured for a GitHub Pages project path under `/tech-blog/`.
+- Public article content is version controlled and generated statically.
+- Internal site links are base-path aware for GitHub Pages deployment.
