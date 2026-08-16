@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/article/PostCard.astro';
 import { getAllCategories, getAllPosts } from '../utils/posts';
 import { SITE } from '../site.config';
+import { withBase } from '../utils/paths';
 
 const posts = await getAllPosts();
 const latestPosts = posts.slice(0, 5);
@@ -24,7 +25,7 @@ const categories = getAllCategories(posts);
   <section class="container py-8">
     <div class="flex items-end justify-between gap-4">
       <h2 class="text-3xl font-semibold">Featured Articles</h2>
-      <a class="text-sm font-semibold" style="color: var(--accent)" href="/blog">View all</a>
+      <a class="text-sm font-semibold" style="color: var(--accent)" href={withBase('/blog')}>View all</a>
     </div>
     <div class="mt-4">
       {featuredPosts.map((post) => <PostCard post={post} />)}
@@ -42,7 +43,7 @@ const categories = getAllCategories(posts);
     <h2 class="text-3xl font-semibold">Topics</h2>
     <div class="mt-5 flex flex-wrap gap-3">
       {categories.map((category) => (
-        <a class="rounded-full border px-4 py-2 text-sm font-medium" style="border-color: var(--line)" href={`/categories/${category}`}>
+        <a class="rounded-full border px-4 py-2 text-sm font-medium" style="border-color: var(--line)" href={withBase(`/categories/${category}`)}>
           {category}
         </a>
       ))}

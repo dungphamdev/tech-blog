@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { withBase } from './paths';
 
 export type BlogPost = CollectionEntry<'blog'>;
 
@@ -11,7 +12,7 @@ export function postSlug(post: BlogPost) {
 }
 
 export function postUrl(post: BlogPost) {
-  return `/blog/${postSlug(post)}`;
+  return withBase(`/blog/${postSlug(post)}`);
 }
 
 export async function getAllPosts() {

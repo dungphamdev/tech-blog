@@ -8,7 +8,8 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.github.io',
+  site: 'https://dungpt.github.io/tech-blog/',
+  base: '/tech-blog',
   integrations: [
     mdx(),
     sitemap({

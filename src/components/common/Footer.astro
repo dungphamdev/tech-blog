@@ -1,12 +1,13 @@
 ---
 import { SITE } from '../../site.config';
+import { withBase } from '../../utils/paths';
 ---
 
 <footer class="mt-16 border-t py-10 text-sm" style="border-color: var(--line); color: var(--muted)">
   <div class="container flex flex-col justify-between gap-4 md:flex-row">
     <p>&copy; {new Date().getFullYear()} {SITE.author}. Built with Astro.</p>
     <div class="flex gap-4">
-      <a href="/rss.xml">RSS</a>
+      <a href={withBase('/rss.xml')}>RSS</a>
       <a href={SITE.github}>GitHub</a>
       <a href={SITE.linkedin}>LinkedIn</a>
     </div>
