@@ -1,0 +1,26 @@
+---
+import type { BlogPost } from '../utils/posts';
+import BaseLayout from './BaseLayout.astro';
+import ArticleHeader from '../components/article/ArticleHeader.astro';
+import ArticleTOC from '../components/article/ArticleTOC.astro';
+
+interface Props {
+  post: BlogPost;
+  headings: { depth: number; slug: string; text: string }[];
+  readingTime: string;
+}
+
+const { post, headings, readingTime } = Astro.props;
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} ogType="article">
+  <article class="container py-10 md:py-14">
+    <ArticleHeader post={post} readingTime={readingTime} />
+    <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
+      <div class="prose max-w-[780px]">
+        <slot />
+      </div>
+      <ArticleTOC headings={headings} />
+    </div>
+  </article>
+</BaseLayout>

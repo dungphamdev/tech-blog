@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Repository architecture</title>
+  <desc id="desc">Application services call repositories, which coordinate Entity Framework and SQL storage.</desc>
+  <rect width="960" height="360" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#0f766e" stroke-width="3">
+    <rect x="70" y="110" width="210" height="110" rx="8"/>
+    <rect x="375" y="110" width="210" height="110" rx="8"/>
+    <rect x="680" y="110" width="210" height="110" rx="8"/>
+  </g>
+  <g fill="#0f172a" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">
+    <text x="175" y="170">Application</text>
+    <text x="480" y="170">Repository</text>
+    <text x="785" y="170">Database</text>
+  </g>
+  <g stroke="#334155" stroke-width="4" fill="none" marker-end="url(#arrow)">
+    <path d="M280 165h80"/>
+    <path d="M585 165h80"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L0 6 L9 3 z" fill="#334155"/>
+    </marker>
+  </defs>
+</svg>

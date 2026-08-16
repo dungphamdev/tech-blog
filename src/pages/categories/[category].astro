@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/article/PostCard.astro';
+import { getAllCategories, getAllPosts } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return getAllCategories(posts).map((category) => ({
+    params: { category },
+    props: { posts: posts.filter((post) => post.data.category === category), category },
+  }));
+}
+
+const { posts, category } = Astro.props;
+---
+
+<BaseLayout title={category} description={`Articles in the ${category} category.`}>
+  <section class="container py-14">
+    <h1 class="text-5xl font-bold">{category}</h1>
+    <p class="mt-4" style="color: var(--muted)">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+    <div class="mt-8">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

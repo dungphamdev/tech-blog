@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/article/PostCard.astro';
+import { getAllPosts } from '../../utils/posts';
+
+const posts = await getAllPosts();
+---
+
+<BaseLayout title="Blog" description="Technical articles about .NET, architecture, cloud, DevOps, and software engineering.">
+  <section class="container py-14">
+    <h1 class="text-5xl font-bold">Blog</h1>
+    <p class="mt-4 max-w-2xl text-xl" style="color: var(--muted)">
+      Notes, patterns, and implementation details for building software that survives real production work.
+    </p>
+    <div class="mt-8">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

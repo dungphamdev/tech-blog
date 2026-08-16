@@ -1,0 +1,36 @@
+---
+interface Props {
+  type?: 'info' | 'warning' | 'tip' | 'danger';
+}
+
+const { type = 'info' } = Astro.props;
+const labels = {
+  info: 'Info',
+  warning: 'Warning',
+  tip: 'Tip',
+  danger: 'Danger',
+};
+---
+
+<aside class={`callout callout-${type}`}>
+  <strong>{labels[type]}</strong>
+  <div>
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    margin: 1.5rem 0;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem;
+    background: var(--surface);
+  }
+
+  .callout strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const headings = Astro.props.headings.filter((heading) => heading.depth > 1 && heading.depth < 4);
+---
+
+{
+  headings.length > 0 && (
+    <aside class="hidden lg:block">
+      <div class="sticky top-24 border-l pl-5 text-sm" style="border-color: var(--line)">
+        <p class="mb-3 font-semibold">In this article</p>
+        <ol class="space-y-2" style="color: var(--muted)">
+          {headings.map((heading) => (
+            <li class={heading.depth === 3 ? 'pl-4' : ''}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </aside>
+  )
+}

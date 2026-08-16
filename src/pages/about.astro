@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../site.config';
+---
+
+<BaseLayout title="About" description="About the author and technical focus of this blog.">
+  <section class="container py-14">
+    <div class="max-w-3xl">
+      <h1 class="text-5xl font-bold">About</h1>
+      <p class="mt-6 text-xl" style="color: var(--muted)">
+        This is a personal engineering blog for practical notes on building maintainable software with .NET,
+        cloud-native architecture, DevOps, databases, messaging, and AI-assisted workflows.
+      </p>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <section>
+          <h2 class="text-2xl font-semibold">Technical Focus</h2>
+          <ul class="mt-4 space-y-2" style="color: var(--muted)">
+            <li>.NET and C#</li>
+            <li>Software architecture</li>
+            <li>Azure and DevOps</li>
+            <li>Terraform, SQL, Kafka, and messaging</li>
+          </ul>
+        </section>
+        <section>
+          <h2 class="text-2xl font-semibold">Links</h2>
+          <div class="mt-4 flex flex-col gap-2" style="color: var(--muted)">
+            <a href={SITE.github}>GitHub</a>
+            <a href={SITE.linkedin}>LinkedIn</a>
+            <a href="mailto:hello@example.com">hello@example.com</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

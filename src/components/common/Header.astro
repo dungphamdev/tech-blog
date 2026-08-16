@@ -1,0 +1,47 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { SITE } from '../../site.config';
+---
+
+<header class="sticky top-0 z-20 border-b bg-[color:var(--surface)]/95 backdrop-blur" style="border-color: var(--line)">
+  <nav class="container flex min-h-16 items-center justify-between gap-4">
+    <a href="/" class="font-semibold tracking-tight">{SITE.title}</a>
+    <button
+      class="menu-button rounded-md border px-3 py-2 text-sm md:hidden"
+      style="border-color: var(--line)"
+      aria-expanded="false"
+      aria-controls="site-menu"
+    >
+      Menu
+    </button>
+    <div id="site-menu" class="hidden items-center gap-5 text-sm font-medium md:flex">
+      <a href="/blog">Blog</a>
+      <a href="/tags/dotnet">Topics</a>
+      <a href="/about">About</a>
+      <a href={SITE.github}>GitHub</a>
+      <a href={SITE.linkedin}>LinkedIn</a>
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.menu-button');
+  const menu = document.querySelector<HTMLElement>('#site-menu');
+
+  button?.addEventListener('click', () => {
+    const isOpen = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!isOpen));
+    menu?.classList.toggle('hidden', isOpen);
+    menu?.classList.toggle('flex', !isOpen);
+    menu?.classList.toggle('absolute', !isOpen);
+    menu?.classList.toggle('left-4', !isOpen);
+    menu?.classList.toggle('right-4', !isOpen);
+    menu?.classList.toggle('top-16', !isOpen);
+    menu?.classList.toggle('flex-col', !isOpen);
+    menu?.classList.toggle('items-start', !isOpen);
+    menu?.classList.toggle('border', !isOpen);
+    menu?.classList.toggle('p-4', !isOpen);
+    menu?.classList.toggle('bg-[color:var(--surface)]', !isOpen);
+  });
+</script>

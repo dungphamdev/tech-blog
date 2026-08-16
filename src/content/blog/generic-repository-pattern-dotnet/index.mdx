@@ -1,0 +1,105 @@
+---
+title: "Generic Repository Pattern in .NET"
+description: "A practical look at when a generic repository helps, when it gets in the way, and how to keep the abstraction honest."
+publishedAt: 2026-08-15
+updatedAt: 2026-08-15
+draft: false
+category: dotnet
+tags:
+  - dotnet
+  - csharp
+  - architecture
+coverImage: ./architecture.svg
+github: https://github.com/example/generic-repository
+series: Pragmatic .NET Architecture
+---
+
+import Callout from '../../../components/mdx/Callout.astro';
+import Mermaid from '../../../components/mdx/Mermaid.astro';
+
+The generic repository pattern is useful when it protects application code from repetitive persistence details. It becomes harmful when it hides important query behavior or duplicates what Entity Framework already does well.
+
+![Repository architecture](./architecture.svg)
+
+## The Shape of the Pattern
+
+A small repository interface usually starts with only the operations that most aggregates genuinely share.
+
+```csharp
+public interface IRepository<TAggregate>
+    where TAggregate : class
+{
+    Task<TAggregate?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task AddAsync(TAggregate aggregate, CancellationToken cancellationToken);
+    void Remove(TAggregate aggregate);
+}
+```
+
+<Callout type="warning">
+Do not add every possible query method just because another aggregate might need it later.
+</Callout>
+
+## Implementation
+
+The implementation can stay thin. Entity Framework remains responsible for change tracking and SQL generation.
+
+```csharp
+public sealed class EfRepository<TAggregate> : IRepository<TAggregate>
+    where TAggregate : class
+{
+    private readonly AppDbContext dbContext;
+
+    public EfRepository(AppDbContext dbContext)
+    {
+        this.dbContext = dbContext;
+    }
+
+    public Task<TAggregate?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return dbContext.Set<TAggregate>().FindAsync([id], cancellationToken).AsTask();
+    }
+
+    public Task AddAsync(TAggregate aggregate, CancellationToken cancellationToken)
+    {
+        return dbContext.Set<TAggregate>().AddAsync(aggregate, cancellationToken).AsTask();
+    }
+
+    public void Remove(TAggregate aggregate)
+    {
+        dbContext.Set<TAggregate>().Remove(aggregate);
+    }
+}
+```
+
+## Query Boundaries
+
+Generic repositories should not force rich queries through awkward generic methods. For read-heavy scenarios, prefer explicit queries.
+
+```sql
+select
+    o.Id,
+    o.OrderNumber,
+    o.CreatedAt,
+    sum(i.Quantity * i.UnitPrice) as Total
+from Orders o
+join OrderItems i on i.OrderId = o.Id
+where o.CustomerId = @CustomerId
+group by o.Id, o.OrderNumber, o.CreatedAt
+order by o.CreatedAt desc;
+```
+
+## Request Flow
+
+<Mermaid chart={`flowchart LR
+    Controller --> Handler
+    Handler --> Repository
+    Repository --> DbContext
+    DbContext --> SQL[(SQL Database)]`} />
+
+## Practical Rule
+
+Use a generic repository for consistent aggregate loading and persistence. Use specific query objects, specifications, or direct read models when the question being asked is domain-specific.
+
+<Callout type="tip">
+If the abstraction makes a simple query harder to read, the abstraction is probably too broad.
+</Callout>
