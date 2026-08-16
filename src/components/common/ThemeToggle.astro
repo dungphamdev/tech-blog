@@ -1,18 +1,61 @@
 <button
-  class="theme-toggle rounded-md border px-3 py-2 text-sm"
-  style="border-color: var(--line)"
+  class="theme-toggle"
   type="button"
-  aria-label="Toggle dark mode"
+  aria-label="Switch to dark mode"
+  aria-pressed="false"
+  title="Toggle color theme"
 >
-  Theme
+  <span class="theme-toggle__label theme-toggle__label--light">Light</span>
+  <span class="theme-toggle__track" aria-hidden="true">
+    <span class="theme-toggle__thumb">
+      <span class="theme-toggle__icon theme-toggle__icon--sun">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M12 2.75v2.5M12 18.75v2.5M21.25 12h-2.5M5.25 12h-2.5M18.54 5.46l-1.77 1.77M7.23 16.77l-1.77 1.77M18.54 18.54l-1.77-1.77M7.23 7.23 5.46 5.46"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="1.8"
+          />
+        </svg>
+      </span>
+      <span class="theme-toggle__icon theme-toggle__icon--moon">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path
+            d="M15.2 2.6a8.9 8.9 0 1 0 6.2 13.8A9.8 9.8 0 0 1 15.2 2.6Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+          />
+        </svg>
+      </span>
+    </span>
+  </span>
+  <span class="theme-toggle__label theme-toggle__label--dark">Dark</span>
+  <span class="sr-only theme-toggle__text">Toggle color theme</span>
 </button>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
-  toggle?.addEventListener('click', () => {
-    const root = document.documentElement;
-    const nextTheme = root.classList.contains('dark') ? 'light' : 'dark';
-    root.classList.toggle('dark', nextTheme === 'dark');
-    localStorage.setItem('theme', nextTheme);
+  const syncThemeToggle = (toggle: HTMLButtonElement) => {
+    const isDark = document.documentElement.classList.contains('dark');
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggle.dataset.theme = isDark ? 'dark' : 'light';
+  };
+
+  const themeToggles = document.querySelectorAll<HTMLButtonElement>('.theme-toggle');
+
+  themeToggles.forEach((toggle) => {
+    syncThemeToggle(toggle);
+
+    toggle.addEventListener('click', () => {
+      const root = document.documentElement;
+      const nextTheme = root.classList.contains('dark') ? 'light' : 'dark';
+      root.classList.toggle('dark', nextTheme === 'dark');
+      localStorage.setItem('theme', nextTheme);
+      syncThemeToggle(toggle);
+    });
   });
 </script>
