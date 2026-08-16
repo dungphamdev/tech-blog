@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/article/PostCard.astro';
+import { getAllPosts } from '../../../utils/posts';
+import { LANGUAGES, localizedPath, type Language } from '../../../utils/i18n';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Language };
+const posts = await getAllPosts(lang);
+const alternateUrls = Object.fromEntries(LANGUAGES.map((language) => [language, localizedPath(language, '/blog')]));
+---
+
+<BaseLayout
+  title="Blog"
+  description="Technical articles about .NET, architecture, cloud, DevOps, and software engineering."
+  lang={lang}
+  canonical={localizedPath(lang, '/blog')}
+  alternateUrls={alternateUrls}
+  languageSwitchUrl={localizedPath(lang === 'en' ? 'vi' : 'en', '/blog')}
+>
+  <section class="container py-14">
+    <h1 class="text-5xl font-bold">Blog</h1>
+    <p class="mt-4 max-w-2xl text-xl" style="color: var(--muted)">
+      {lang === 'vi'
+        ? 'Ghi chu, pattern, va chi tiet implementation cho phan mem chay duoc trong production.'
+        : 'Notes, patterns, and implementation details for building software that survives real production work.'}
+    </p>
+    <div class="mt-8">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

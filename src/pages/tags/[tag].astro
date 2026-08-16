@@ -2,9 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/article/PostCard.astro';
 import { getAllPosts, getAllTags } from '../../utils/posts';
+import { DEFAULT_LANGUAGE, localizedPath } from '../../utils/i18n';
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts();
+  const posts = await getAllPosts(DEFAULT_LANGUAGE);
   return getAllTags(posts).map((tag) => ({
     params: { tag },
     props: { posts: posts.filter((post) => post.data.tags.includes(tag)), tag },
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
 const { posts, tag } = Astro.props;
 ---
 
-<BaseLayout title={`#${tag}`} description={`Articles tagged ${tag}.`}>
+<BaseLayout title={`#${tag}`} description={`Articles tagged ${tag}.`} lang={DEFAULT_LANGUAGE} canonical={localizedPath(DEFAULT_LANGUAGE, `/tags/${tag}`)} languageSwitchUrl={localizedPath('vi', `/tags/${tag}`)}>
   <section class="container py-14">
     <h1 class="text-5xl font-bold">#{tag}</h1>
     <p class="mt-4" style="color: var(--muted)">{posts.length} article{posts.length === 1 ? '' : 's'}</p>

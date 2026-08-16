@@ -2,11 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/article/PostCard.astro';
 import { getAllPosts } from '../../utils/posts';
+import { DEFAULT_LANGUAGE, localizedPath } from '../../utils/i18n';
 
-const posts = await getAllPosts();
+const posts = await getAllPosts(DEFAULT_LANGUAGE);
 ---
 
-<BaseLayout title="Blog" description="Technical articles about .NET, architecture, cloud, DevOps, and software engineering.">
+<BaseLayout title="Blog" description="Technical articles about .NET, architecture, cloud, DevOps, and software engineering." lang={DEFAULT_LANGUAGE} canonical={localizedPath(DEFAULT_LANGUAGE, '/blog')} languageSwitchUrl={localizedPath('vi', '/blog')}>
   <section class="container py-14">
     <h1 class="text-5xl font-bold">Blog</h1>
     <p class="mt-4 max-w-2xl text-xl" style="color: var(--muted)">

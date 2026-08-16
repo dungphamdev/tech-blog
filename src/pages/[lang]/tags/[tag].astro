@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/article/PostCard.astro';
+import { getAllPosts, getAllTags } from '../../../utils/posts';
+import { LANGUAGES, localizedPath, type Language } from '../../../utils/i18n';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const lang of LANGUAGES) {
+    const posts = await getAllPosts(lang);
+    paths.push(
+      ...getAllTags(posts).map((tag) => ({
+        params: { lang, tag },
+        props: { posts: posts.filter((post) => post.data.tags.includes(tag)), tag, lang },
+      })),
+    );
+  }
+
+  return paths;
+}
+
+const { posts, tag, lang } = Astro.props as { posts: Awaited<ReturnType<typeof getAllPosts>>; tag: string; lang: Language };
+const alternateUrls = Object.fromEntries(LANGUAGES.map((language) => [language, localizedPath(language, `/tags/${tag}`)]));
+---
+
+<BaseLayout
+  title={`#${tag}`}
+  description={`Articles tagged ${tag}.`}
+  lang={lang}
+  canonical={localizedPath(lang, `/tags/${tag}`)}
+  alternateUrls={alternateUrls}
+  languageSwitchUrl={localizedPath(lang === 'en' ? 'vi' : 'en', `/tags/${tag}`)}
+>
+  <section class="container py-14">
+    <h1 class="text-5xl font-bold">#{tag}</h1>
+    <p class="mt-4" style="color: var(--muted)">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+    <div class="mt-8">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../site.config';
+import { LANGUAGES, localizedPath, type Language } from '../../utils/i18n';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Language };
+const alternateUrls = Object.fromEntries(LANGUAGES.map((language) => [language, localizedPath(language, '/about')]));
+---
+
+<BaseLayout
+  title="About"
+  description="About the author and technical focus of this blog."
+  lang={lang}
+  canonical={localizedPath(lang, '/about')}
+  alternateUrls={alternateUrls}
+  languageSwitchUrl={localizedPath(lang === 'en' ? 'vi' : 'en', '/about')}
+>
+  <section class="container py-14">
+    <div class="max-w-3xl">
+      <h1 class="text-5xl font-bold">About</h1>
+      <p class="mt-6 text-xl" style="color: var(--muted)">
+        {lang === 'vi'
+          ? 'Day la blog ca nhan ve cac ghi chu thuc te khi xay dung phan mem maintainable voi .NET, cloud-native architecture, DevOps, database, messaging, va AI-assisted workflows.'
+          : 'This is a personal engineering blog for practical notes on building maintainable software with .NET, cloud-native architecture, DevOps, databases, messaging, and AI-assisted workflows.'}
+      </p>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <section>
+          <h2 class="text-2xl font-semibold">Technical Focus</h2>
+          <ul class="mt-4 space-y-2" style="color: var(--muted)">
+            <li>.NET and C#</li>
+            <li>Software architecture</li>
+            <li>Azure and DevOps</li>
+            <li>Terraform, SQL, Kafka, and messaging</li>
+          </ul>
+        </section>
+        <section>
+          <h2 class="text-2xl font-semibold">Links</h2>
+          <div class="mt-4 flex flex-col gap-2" style="color: var(--muted)">
+            <a href={SITE.github}>GitHub</a>
+            <a href={SITE.linkedin}>LinkedIn</a>
+            <a href="mailto:dungphamdev@gmail.com">dungphamdev@gmail.com</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

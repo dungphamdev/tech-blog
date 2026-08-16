@@ -3,17 +3,29 @@ import type { BlogPost } from '../utils/posts';
 import BaseLayout from './BaseLayout.astro';
 import ArticleHeader from '../components/article/ArticleHeader.astro';
 import ArticleTOC from '../components/article/ArticleTOC.astro';
+import type { Language } from '../utils/i18n';
 
 interface Props {
   post: BlogPost;
   headings: { depth: number; slug: string; text: string }[];
   readingTime: string;
+  canonical?: string;
+  alternateUrls?: Partial<Record<Language, string>>;
+  languageSwitchUrl?: string;
 }
 
-const { post, headings, readingTime } = Astro.props;
+const { post, headings, readingTime, canonical, alternateUrls, languageSwitchUrl } = Astro.props;
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} ogType="article">
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  lang={post.data.lang}
+  canonical={canonical}
+  alternateUrls={alternateUrls}
+  languageSwitchUrl={languageSwitchUrl}
+>
   <article class="container py-10 md:py-14">
     <ArticleHeader post={post} readingTime={readingTime} />
     <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">

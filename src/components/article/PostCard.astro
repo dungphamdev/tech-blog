@@ -16,7 +16,7 @@ const { post } = Astro.props;
     <h2 class="mt-2 text-2xl font-semibold group-hover:text-[color:var(--accent)]">{post.data.title}</h2>
     <p class="mt-2 max-w-2xl" style="color: var(--muted)">{post.data.description}</p>
     <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2 text-sm" style="color: var(--muted)">
-      <span>{formatDate(post.data.publishedAt)}</span>
+      <span>{formatDate(post.data.publishedAt, post.data.lang)}</span>
       <span>{getReadingTime(post.body ?? '')}</span>
       {post.data.tags.slice(0, 3).map((tag) => <span>#{tag}</span>)}
     </div>

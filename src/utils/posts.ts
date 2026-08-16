@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { withBase } from './paths';
+import { DEFAULT_LANGUAGE, type Language, localizedPath } from './i18n';
 
 export type BlogPost = CollectionEntry<'blog'>;
 
@@ -8,20 +8,51 @@ export function isProduction() {
 }
 
 export function postSlug(post: BlogPost) {
-  return post.id.replace(/(^|\/)index\.(md|mdx)$/i, '').replace(/\.(md|mdx)$/i, '').replace(/\/$/, '');
+  return post.id
+    .replace(/\/(en|vi)(\.(md|mdx))?$/i, '')
+    .replace(/(^|\/)index(\.(md|mdx))?$/i, '')
+    .replace(/\.(md|mdx)$/i, '')
+    .replace(/\/$/, '');
 }
 
 export function postUrl(post: BlogPost) {
-  return withBase(`/blog/${postSlug(post)}`);
+  return localizedPath(post.data.lang, `/blog/${postSlug(post)}`);
 }
 
-export async function getAllPosts() {
+export async function getAllPosts(language?: Language) {
   const posts = await getCollection('blog', ({ data }) => !isProduction() || !data.draft);
-  return posts.sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+  return posts
+    .filter((post) => !language || post.data.lang === language)
+    .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 }
 
-export function formatDate(date: Date) {
-  return new Intl.DateTimeFormat('en', {
+export async function getDefaultLanguagePosts() {
+  return getAllPosts(DEFAULT_LANGUAGE);
+}
+
+export async function getTranslations(post: BlogPost) {
+  const posts = await getAllPosts();
+  return posts.filter((candidate) => candidate.data.translationKey === post.data.translationKey);
+}
+
+export async function getTranslation(post: BlogPost, language: Language) {
+  const translations = await getTranslations(post);
+  return translations.find((candidate) => candidate.data.lang === language);
+}
+
+export async function getAlternateUrls(post: BlogPost) {
+  const translations = await getTranslations(post);
+  return Object.fromEntries(translations.map((translation) => [translation.data.lang, postUrl(translation)])) as Partial<
+    Record<Language, string>
+  >;
+}
+
+export function localizedBlogPath(language: Language) {
+  return localizedPath(language, '/blog');
+}
+
+export function formatDate(date: Date, language: Language = DEFAULT_LANGUAGE) {
+  return new Intl.DateTimeFormat(language, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

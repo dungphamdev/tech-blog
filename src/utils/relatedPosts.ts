@@ -2,7 +2,7 @@ import type { BlogPost } from './posts';
 
 export function getRelatedPosts(currentPost: BlogPost, posts: BlogPost[], limit = 3) {
   return posts
-    .filter((post) => post.id !== currentPost.id)
+    .filter((post) => post.id !== currentPost.id && post.data.lang === currentPost.data.lang)
     .map((post) => ({
       post,
       score: post.data.tags.filter((tag) => currentPost.data.tags.includes(tag)).length,

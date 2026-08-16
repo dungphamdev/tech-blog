@@ -1,12 +1,21 @@
 ---
 import { SITE } from '../../site.config';
-import { withBase } from '../../utils/paths';
+import { alternateLanguage, LANGUAGE_LABELS, localizedPath, type Language } from '../../utils/i18n';
 import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  lang: Language;
+  languageSwitchUrl?: string;
+}
+
+const { lang, languageSwitchUrl } = Astro.props;
+const nextLang = alternateLanguage(lang);
+const switchUrl = languageSwitchUrl ?? localizedPath(nextLang);
 ---
 
 <header class="site-header sticky top-0 z-20 border-b bg-[color:var(--surface)]/95 backdrop-blur" style="border-color: var(--line)">
   <nav class="container flex min-h-16 items-center justify-between gap-4 md:min-h-[4.5rem]">
-    <a href={withBase('/')} class="font-semibold tracking-tight">{SITE.title}</a>
+    <a href={localizedPath(lang)} class="font-semibold tracking-tight">{SITE.title}</a>
     <div class="flex items-center gap-3 md:gap-4">
       <button
         class="menu-button rounded-md border px-3 py-2 text-sm md:hidden"
@@ -17,9 +26,12 @@ import ThemeToggle from './ThemeToggle.astro';
         Menu
       </button>
       <div id="site-menu" class="hidden items-center gap-5 text-sm font-medium md:flex">
-        <a href={withBase('/blog')}>Blog</a>
-        <a href={withBase('/tags/dotnet')}>Topics</a>
-        <a href={withBase('/about')}>About</a>
+        <a href={localizedPath(lang, '/blog')}>Blog</a>
+        <a href={localizedPath(lang, '/tags/dotnet')}>Topics</a>
+        <a href={localizedPath(lang, '/about')}>About</a>
+        <a class="rounded-md border px-2 py-1 text-xs uppercase" style="border-color: var(--line)" href={switchUrl} aria-label={`Switch to ${LANGUAGE_LABELS[nextLang]}`}>
+          {nextLang}
+        </a>
       </div>
       <ThemeToggle />
     </div>

@@ -1,14 +1,14 @@
 ---
 import { render } from 'astro:content';
-import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
-import { getAllPosts, getAlternateUrls, getTranslation, localizedBlogPath, postSlug, postUrl } from '../../utils/posts';
-import { alternateLanguage, DEFAULT_LANGUAGE } from '../../utils/i18n';
-import { getReadingTime } from '../../utils/readingTime';
+import BlogPostLayout from '../../../layouts/BlogPostLayout.astro';
+import { getAllPosts, getAlternateUrls, getTranslation, localizedBlogPath, postSlug, postUrl } from '../../../utils/posts';
+import { alternateLanguage } from '../../../utils/i18n';
+import { getReadingTime } from '../../../utils/readingTime';
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts(DEFAULT_LANGUAGE);
+  const posts = await getAllPosts();
   return posts.map((post) => ({
-    params: { slug: postSlug(post) },
+    params: { lang: post.data.lang, slug: postSlug(post) },
     props: { post },
   }));
 }

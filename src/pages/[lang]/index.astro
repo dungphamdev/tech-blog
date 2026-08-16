@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/article/PostCard.astro';
+import { getAllCategories, getAllPosts } from '../../utils/posts';
+import { LANGUAGES, localizedPath, type Language } from '../../utils/i18n';
+import { SITE } from '../../site.config';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: Language };
+const posts = await getAllPosts(lang);
+const latestPosts = posts.slice(0, 5);
+const featuredPosts = posts.slice(0, 3);
+const categories = getAllCategories(posts);
+const alternateUrls = Object.fromEntries(LANGUAGES.map((language) => [language, localizedPath(language)]));
+---
+
+<BaseLayout lang={lang} canonical={localizedPath(lang)} alternateUrls={alternateUrls} languageSwitchUrl={localizedPath(lang === 'en' ? 'vi' : 'en')}>
+  <section class="container py-14 md:py-20">
+    <div class="max-w-3xl">
+      <p class="text-sm font-semibold uppercase tracking-wide" style="color: var(--accent)">Software Engineering</p>
+      <h1 class="mt-4 text-5xl font-bold leading-tight md:text-7xl">{SITE.title}</h1>
+      <p class="mt-5 text-xl" style="color: var(--muted)">
+        {lang === 'vi'
+          ? '.NET, kien truc, cloud, DevOps, database, messaging, va phat trien voi AI trong thuc te.'
+          : '.NET, architecture, cloud, DevOps, databases, messaging, and practical AI-assisted development.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="container py-8">
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="text-3xl font-semibold">{lang === 'vi' ? 'Bai Viet Noi Bat' : 'Featured Articles'}</h2>
+      <a class="text-sm font-semibold" style="color: var(--accent)" href={localizedPath(lang, '/blog')}>{lang === 'vi' ? 'Xem tat ca' : 'View all'}</a>
+    </div>
+    <div class="mt-4">
+      {featuredPosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="container py-8">
+    <h2 class="text-3xl font-semibold">{lang === 'vi' ? 'Moi Nhat' : 'Latest Articles'}</h2>
+    <div class="mt-4">
+      {latestPosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+
+  <section class="container py-8">
+    <h2 class="text-3xl font-semibold">Topics</h2>
+    <div class="mt-5 flex flex-wrap gap-3">
+      {categories.map((category) => (
+        <a class="rounded-full border px-4 py-2 text-sm font-medium" style="border-color: var(--line)" href={localizedPath(lang, `/categories/${category}`)}>
+          {category}
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

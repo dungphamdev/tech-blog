@@ -1,9 +1,11 @@
 ---
-title: "Generic Repository Pattern in .NET"
-description: "A practical look at when a generic repository helps, when it gets in the way, and how to keep the abstraction honest."
+title: "Generic Repository Pattern trong .NET"
+description: "Goc nhin thuc te ve luc generic repository huu ich, luc no can tro, va cach giu abstraction trung thuc."
 publishedAt: 2026-08-15
 updatedAt: 2026-08-15
 draft: false
+lang: vi
+translationKey: generic-repository-pattern-dotnet
 category: dotnet
 tags:
   - dotnet
@@ -17,13 +19,13 @@ series: Pragmatic .NET Architecture
 import Callout from '../../../components/mdx/Callout.astro';
 import Mermaid from '../../../components/mdx/Mermaid.astro';
 
-The generic repository pattern is useful when it protects application code from repetitive persistence details. It becomes harmful when it hides important query behavior or duplicates what Entity Framework already does well.
+Generic repository pattern huu ich khi no bao ve application code khoi cac chi tiet persistence lap lai. No tro nen co hai khi che giau hanh vi truy van quan trong hoac lap lai nhung viec Entity Framework da lam tot.
 
 ![Repository architecture](./architecture.svg)
 
-## The Shape of the Pattern
+## Hinh Dang Cua Pattern
 
-A small repository interface usually starts with only the operations that most aggregates genuinely share.
+Mot repository interface nho thuong chi bat dau voi cac thao tac ma hau het aggregate that su dung chung.
 
 ```csharp
 public interface IRepository<TAggregate>
@@ -36,12 +38,12 @@ public interface IRepository<TAggregate>
 ```
 
 <Callout type="warning">
-Do not add every possible query method just because another aggregate might need it later.
+Dung them moi kieu query method chi vi mot aggregate nao do co the can ve sau.
 </Callout>
 
-## Implementation
+## Trien Khai
 
-The implementation can stay thin. Entity Framework remains responsible for change tracking and SQL generation.
+Phan implementation nen mong. Entity Framework van chiu trach nhiem change tracking va sinh SQL.
 
 ```csharp
 public sealed class EfRepository<TAggregate> : IRepository<TAggregate>
@@ -71,9 +73,9 @@ public sealed class EfRepository<TAggregate> : IRepository<TAggregate>
 }
 ```
 
-## Query Boundaries
+## Ranh Gioi Query
 
-Generic repositories should not force rich queries through awkward generic methods. For read-heavy scenarios, prefer explicit queries.
+Generic repository khong nen ep cac truy van giau ngu nghia di qua nhung generic method kho doc. Voi cac truong hop doc du lieu nhieu, hay uu tien query ro rang.
 
 ```sql
 select
@@ -96,10 +98,10 @@ order by o.CreatedAt desc;
     Repository --> DbContext
     DbContext --> SQL[(SQL Database)]`} />
 
-## Practical Rule
+## Quy Tac Thuc Te
 
-Use a generic repository for consistent aggregate loading and persistence. Use specific query objects, specifications, or direct read models when the question being asked is domain-specific.
+Dung generic repository cho viec load va persist aggregate mot cach nhat quan. Dung query object, specification, hoac read model truc tiep khi cau hoi mang tinh domain-specific.
 
 <Callout type="tip">
-If the abstraction makes a simple query harder to read, the abstraction is probably too broad.
+Neu abstraction lam mot query don gian kho doc hon, abstraction do co le qua rong.
 </Callout>

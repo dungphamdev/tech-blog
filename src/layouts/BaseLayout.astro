@@ -3,6 +3,7 @@ import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import '../styles/global.css';
 import { SITE } from '../site.config';
+import { DEFAULT_LANGUAGE, type Language } from '../utils/i18n';
 import { withBase } from '../utils/paths';
 
 interface Props {
@@ -10,6 +11,9 @@ interface Props {
   description?: string;
   canonical?: string;
   ogType?: 'website' | 'article';
+  lang?: Language;
+  alternateUrls?: Partial<Record<Language, string>>;
+  languageSwitchUrl?: string;
 }
 
 const {
@@ -17,24 +21,33 @@ const {
   description = SITE.description,
   canonical = new URL(Astro.url.pathname, SITE.url).toString(),
   ogType = 'website',
+  lang = DEFAULT_LANGUAGE,
+  alternateUrls = {},
+  languageSwitchUrl,
 } = Astro.props;
 const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
+const canonicalUrl = new URL(canonical, SITE.url).toString();
+const normalizedAlternateUrls = Object.entries(alternateUrls).map(([hrefLang, href]) => [
+  hrefLang,
+  href ? new URL(href, SITE.url).toString() : href,
+]);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-    <link rel="canonical" href={canonical} />
+    <link rel="canonical" href={canonicalUrl} />
+    {normalizedAlternateUrls.map(([hrefLang, href]) => href && <link rel="alternate" hreflang={hrefLang} href={href} />)}
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
-    <meta property="og:url" content={canonical} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
       const savedTheme = localStorage.getItem('theme');
@@ -45,7 +58,7 @@ const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
     </script>
   </head>
   <body>
-    <Header />
+    <Header lang={lang} languageSwitchUrl={languageSwitchUrl} />
     <main>
       <slot />
     </main>

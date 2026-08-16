@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../site.config';
+import { DEFAULT_LANGUAGE, localizedPath } from '../utils/i18n';
 ---
 
-<BaseLayout title="About" description="About the author and technical focus of this blog.">
+<BaseLayout title="About" description="About the author and technical focus of this blog." lang={DEFAULT_LANGUAGE} canonical={localizedPath(DEFAULT_LANGUAGE, '/about')} languageSwitchUrl={localizedPath('vi', '/about')}>
   <section class="container py-14">
     <div class="max-w-3xl">
       <h1 class="text-5xl font-bold">About</h1>
